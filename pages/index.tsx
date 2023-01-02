@@ -1,11 +1,52 @@
 import Head from "next/head";
 import Image from "next/image";
+import {
+  GetStaticProps,
+  GetStaticPropsContext,
+  GetStaticPropsResult,
+  InferGetStaticPropsType,
+} from "next";
+
 import Banner from "../components/Banner";
 import Card from "../components/Card";
 
+import coffeeStoreData from "../data/coffee-stores.json";
+
 import styles from "../styles/Home.module.css";
 
-export default function Home() {
+// * Interfaces
+interface CoffeeStore {
+  id: number;
+  name: string;
+  imgUrl: string;
+  websiteUrl: string;
+  address: string;
+  neighbourhood: string;
+}
+
+interface Props {
+  coffeeStoreData: CoffeeStore[];
+}
+
+// * getStaticProps()
+export async function getStaticProps<GetStaticProps>(
+  context: GetStaticPropsContext
+): Promise<GetStaticPropsResult<Props>> {
+  console.log({ context });
+  return {
+    props: {
+      coffeeStoreData,
+    },
+  };
+}
+
+// * Home Page
+export default function Home({
+  coffeeStoreData,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
+  const coffeeStores: CoffeeStore[] = coffeeStoreData;
+
+  // @ handleOnBannerBrnClick()
   const handleOnBannerBrnClick = () => {
     console.log("Hi, banner button");
   };
@@ -32,23 +73,23 @@ export default function Home() {
           priority={true}
         />
 
-        <div className={styles.cardLayout}>
-          <Card
-            title={"DarkHorse Coffee"}
-            href="/coffee-store/darkhorse-coffee"
-            imageUrl="/static/hero-image.png"
-          />
-          <Card
-            title={"DarkHorse Coffee"}
-            href="/coffee-store/darkhorse-coffee"
-            imageUrl="/static/hero-image.png"
-          />
-          <Card
-            title={"DarkHorse Coffee"}
-            href="/coffee-store/darkhorse-coffee"
-            imageUrl="/static/hero-image.png"
-          />
-        </div>
+        {coffeeStores.length > 0 && (
+          <>
+            <h2 className={styles.heading2}>Toronto Stores</h2>
+            <div className={styles.cardLayout}>
+              {coffeeStores.map((store) => {
+                return (
+                  <Card
+                    key={store.id}
+                    name={store.name}
+                    href={`/coffee-store/${store.id}`}
+                    imageUrl={store.imgUrl}
+                  />
+                );
+              })}
+            </div>
+          </>
+        )}
       </main>
     </div>
   );

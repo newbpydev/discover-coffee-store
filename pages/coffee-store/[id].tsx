@@ -1,7 +1,22 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React from "react";
+import {
+  GetStaticPaths,
+  GetStaticPathsContext,
+  GetStaticPathsResult,
+  GetStaticProps,
+  GetStaticPropsContext,
+  GetStaticPropsResult,
+  InferGetStaticPropsType,
+} from "next";
 
+// *                                                        Interfaces
+
+// *                                                        getStaticPaths()
+
+// *                                                        getStaticProps()
+
+// *                                                        CoffeeStoreId Page
 function CoffeeStoreID() {
   const router = useRouter();
   // console.log(router);
