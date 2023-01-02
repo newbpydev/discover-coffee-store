@@ -15,7 +15,7 @@ import coffeeStoreData from "../data/coffee-stores.json";
 import styles from "../styles/Home.module.css";
 
 // * Interfaces
-interface CoffeeStore {
+export interface CoffeeStore {
   id: number;
   name: string;
   imgUrl: string;
