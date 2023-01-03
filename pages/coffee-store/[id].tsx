@@ -9,11 +9,15 @@ import {
   GetStaticPropsResult,
   InferGetStaticPropsType,
 } from "next";
+import cls from "classnames";
 
 import coffeeStoreData from "../../data/coffee-stores.json";
 import { CoffeeStore } from "..";
 import { ParsedUrlQuery } from "querystring";
 import Head from "next/head";
+
+import styles from "../../styles/coffee-store.module.css";
+import Image from "next/image";
 
 // *                                                        Interfaces
 interface ParamsProps extends ParsedUrlQuery {
@@ -76,19 +80,69 @@ function CoffeeStoreID({
     return <div>Loading</div>;
   }
 
+  if (!coffeeStore) return <div>No Such Store </div>;
+
+  const handleUpvoteButton = () => {
+    console.log("handle upvote");
+  };
+
   return (
-    <>
+    <div className={styles.layout}>
       <Head>
         <title>{coffeeStore?.name}</title>
       </Head>
 
-      <div>
-        <Link href={"/"}>Back to home</Link>
-        <p>{coffeeStore?.address}</p>
-        <p>{coffeeStore?.name}</p>
-        <p>{coffeeStore?.neighbourhood}</p>
+      <div className={styles.container}>
+        <div className={styles.col1}>
+          <div className={styles.backToHomeLink}>
+            <Link href={"/"}>Back to home</Link>
+          </div>
+          <div className={styles.nameWrapper}>
+            <h1 className={styles.name}>{coffeeStore?.name}</h1>
+          </div>
+          <Image
+            src={coffeeStore.imgUrl}
+            alt={coffeeStore.name}
+            width={600}
+            height={360}
+            className={styles.storeImg}
+          />
+        </div>
+
+        <div className={cls("glass", styles.col2)}>
+          <div className={styles.iconWrapper}>
+            <Image
+              src="/static/icons/places.svg"
+              width={24}
+              height={24}
+              alt="location icon"
+            />
+            <p className={styles.text}>{coffeeStore?.address}</p>
+          </div>
+          <div className={styles.iconWrapper}>
+            <Image
+              src="/static/icons/nearMe.svg"
+              width={24}
+              height={24}
+              alt="location icon"
+            />
+            <p className={styles.text}>{coffeeStore?.neighbourhood}</p>
+          </div>
+          <div className={styles.iconWrapper}>
+            <Image
+              src="/static/icons/star.svg"
+              width={24}
+              height={24}
+              alt="location icon"
+            />
+            <p className={styles.text}>1</p>
+          </div>
+          <button className={styles.upvoteButton} onClick={handleUpvoteButton}>
+            Up vote!
+          </button>
+        </div>
       </div>
-    </>
+    </div>
   );
 }
 

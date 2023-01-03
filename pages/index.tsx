@@ -13,16 +13,21 @@ import Card from "../components/Card";
 import coffeeStoreData from "../data/coffee-stores.json";
 
 import styles from "../styles/Home.module.css";
+import { CoffeeStore } from "../Types/FourSquare";
 
 // * Interfaces
-export interface CoffeeStore {
-  id: number;
-  name: string;
-  imgUrl: string;
-  websiteUrl: string;
-  address: string;
-  neighbourhood: string;
-}
+// export interface CoffeeStore {
+//   id: number;
+//   name: string;
+//   imgUrl: string;
+//   websiteUrl: string;
+//   address: string;
+//   neighbourhood: string;
+// }
+
+// export interface FourSquareResult {
+
+// }
 
 interface Props {
   coffeeStoreData: CoffeeStore[];
@@ -32,7 +37,26 @@ interface Props {
 export async function getStaticProps<GetStaticProps>(
   context: GetStaticPropsContext
 ): Promise<GetStaticPropsResult<Props>> {
-  console.log({ context });
+  const limit = 6;
+  const options = {
+    method: "GET",
+    headers: {
+      accept: "application/json",
+      Authorization: "fsq31OuoVnQjNveaU85nRAn+qxodUsm0L7l8OdIJcl2u8Ro=",
+    },
+  };
+
+  const response = await fetch(
+    `https://api.foursquare.com/v3/places/search?query=coffee&ll=-19.37%2C-40.06&limit=${limit}`,
+    options
+  );
+  const data = await response.json();
+  const coffeeStoreData: CoffeeStore[] = data.results;
+  console.log({ coffeeStoreData });
+  // .then((response) => response.json())
+  // .then((response) => console.log(response))
+  // .catch((err) => console.error(err));
+
   return {
     props: {
       coffeeStoreData,
@@ -45,6 +69,7 @@ export default function Home({
   coffeeStoreData,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const coffeeStores: CoffeeStore[] = coffeeStoreData;
+  const location = coffeeStores[0].location.locality;
 
   // @ handleOnBannerBrnClick()
   const handleOnBannerBrnClick = () => {
@@ -75,15 +100,17 @@ export default function Home({
 
         {coffeeStores.length > 0 && (
           <>
-            <h2 className={styles.heading2}>Toronto Stores</h2>
+            <h2 className={styles.heading2}>{location} Stores</h2>
             <div className={styles.cardLayout}>
               {coffeeStores.map((store) => {
                 return (
                   <Card
-                    key={store.id}
+                    key={store.fsq_id}
                     name={store.name}
-                    href={`/coffee-store/${store.id}`}
-                    imageUrl={store.imgUrl}
+                    href={`/coffee-store/${store.fsq_id}`}
+                    imageUrl={
+                      "https://images.unsplash.com/photo-1504753793650-d4a2b783c15e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80"
+                    }
                   />
                 );
               })}
