@@ -14,6 +14,7 @@ import coffeeStoreData from "../data/coffee-stores.json";
 
 import styles from "../styles/Home.module.css";
 import { CoffeeStore } from "../Types/FourSquare";
+import { fetchCoffeeStores } from "../lib/coffee-store";
 
 // * Interfaces
 // export interface CoffeeStore {
@@ -37,25 +38,9 @@ interface Props {
 export async function getStaticProps<GetStaticProps>(
   context: GetStaticPropsContext
 ): Promise<GetStaticPropsResult<Props>> {
-  const limit = 6;
-  const options = {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-      Authorization: "fsq31OuoVnQjNveaU85nRAn+qxodUsm0L7l8OdIJcl2u8Ro=",
-    },
-  };
+  const coffeeStoreData = await fetchCoffeeStores();
 
-  const response = await fetch(
-    `https://api.foursquare.com/v3/places/search?query=coffee&ll=-19.37%2C-40.06&limit=${limit}`,
-    options
-  );
-  const data = await response.json();
-  const coffeeStoreData: CoffeeStore[] = data.results;
-  console.log({ coffeeStoreData });
-  // .then((response) => response.json())
-  // .then((response) => console.log(response))
-  // .catch((err) => console.error(err));
+  // console.log(coffeeStoreData);
 
   return {
     props: {

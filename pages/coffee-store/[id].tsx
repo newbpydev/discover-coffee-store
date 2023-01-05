@@ -10,23 +10,19 @@ import {
   InferGetStaticPropsType,
 } from "next";
 import cls from "classnames";
-
-import coffeeStoreData from "../../data/coffee-stores.json";
-import { CoffeeStore } from "..";
 import { ParsedUrlQuery } from "querystring";
 import Head from "next/head";
+import Image from "next/image";
+
+import { CoffeeStore } from "../../Types/FourSquare";
+import { fetchCoffeeStores } from "../../lib/coffee-store";
 
 import styles from "../../styles/coffee-store.module.css";
-import Image from "next/image";
 
 // *                                                        Interfaces
 interface ParamsProps extends ParsedUrlQuery {
   id: string;
 }
-
-// interface StaticProps {
-//   coffeeStore
-// }
 
 interface Props {
   coffeeStore: CoffeeStore | undefined;
@@ -36,10 +32,13 @@ interface Props {
 export async function getStaticPaths<GetStaticPaths>(
   context: GetStaticPathsContext
 ): Promise<GetStaticPathsResult<ParamsProps>> {
-  const paths = coffeeStoreData.map((coffeeStore) => {
+  const coffeeStores = await fetchCoffeeStores();
+  // console.log(coffeeStores.length);
+
+  const paths = coffeeStores.map((coffeeStore) => {
     return {
       params: {
-        id: coffeeStore.id.toString(),
+        id: coffeeStore.fsq_id,
       },
     };
   });
@@ -47,7 +46,7 @@ export async function getStaticPaths<GetStaticPaths>(
   return {
     paths,
     // paths: [{ params: { id: "0" } }, { params: { id: "1" } }],
-    fallback: true,
+    fallback: false,
   };
 }
 
@@ -56,10 +55,11 @@ export async function getStaticProps<GetStaticProps>(
   context: GetStaticPropsContext<ParamsProps>
 ): Promise<GetStaticPropsResult<Props>> {
   const params = context.params;
+  const coffeeStores = await fetchCoffeeStores();
 
-  const store = coffeeStoreData.find((coffeeStore) => {
+  const store = coffeeStores.find((coffeeStore) => {
     if (params?.id) {
-      return coffeeStore.id.toString() === params?.id;
+      return coffeeStore.fsq_id.toString() === params?.id;
     }
   });
 
@@ -75,6 +75,7 @@ function CoffeeStoreID({
   coffeeStore,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const router = useRouter();
+  // console.log(coffeeStore);
 
   if (router.isFallback) {
     return <div>Loading</div>;
@@ -101,7 +102,9 @@ function CoffeeStoreID({
             <h1 className={styles.name}>{coffeeStore?.name}</h1>
           </div>
           <Image
-            src={coffeeStore.imgUrl}
+            src={
+              "https://images.unsplash.com/photo-1504753793650-d4a2b783c15e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80"
+            }
             alt={coffeeStore.name}
             width={600}
             height={360}
@@ -117,7 +120,7 @@ function CoffeeStoreID({
               height={24}
               alt="location icon"
             />
-            <p className={styles.text}>{coffeeStore?.address}</p>
+            <p className={styles.text}>{coffeeStore?.location.address}</p>
           </div>
           <div className={styles.iconWrapper}>
             <Image
@@ -126,7 +129,7 @@ function CoffeeStoreID({
               height={24}
               alt="location icon"
             />
-            <p className={styles.text}>{coffeeStore?.neighbourhood}</p>
+            <p className={styles.text}>{coffeeStore?.location.locality}</p>
           </div>
           <div className={styles.iconWrapper}>
             <Image

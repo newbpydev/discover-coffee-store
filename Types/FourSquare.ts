@@ -5,6 +5,7 @@ interface Category {
 }
 
 interface Location {
+  address: string;
   country: string;
   cross_street: string;
   formatted_address: string;
