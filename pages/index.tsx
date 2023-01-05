@@ -17,18 +17,6 @@ import { CoffeeStore } from "../Types/FourSquare";
 import { fetchCoffeeStores } from "../lib/coffee-store";
 
 // * Interfaces
-// export interface CoffeeStore {
-//   id: number;
-//   name: string;
-//   imgUrl: string;
-//   websiteUrl: string;
-//   address: string;
-//   neighbourhood: string;
-// }
-
-// export interface FourSquareResult {
-
-// }
 
 interface Props {
   coffeeStoreData: CoffeeStore[];
@@ -58,7 +46,7 @@ export default function Home({
 
   // @ handleOnBannerBrnClick()
   const handleOnBannerBrnClick = () => {
-    console.log("Hi, banner button");
+    // handleTrackLocation();
   };
 
   return (
@@ -94,6 +82,7 @@ export default function Home({
                     name={store.name}
                     href={`/coffee-store/${store.fsq_id}`}
                     imageUrl={
+                      store.imgUrl ||
                       "https://images.unsplash.com/photo-1504753793650-d4a2b783c15e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80"
                     }
                   />

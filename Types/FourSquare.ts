@@ -29,4 +29,5 @@ export interface CoffeeStore {
   name: string;
   related_places: RelatedPlaces;
   timezone: string;
+  imgUrl: string;
 }
