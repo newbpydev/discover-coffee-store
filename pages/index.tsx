@@ -12,6 +12,8 @@ import Card from "../components/Card";
 
 import coffeeStoreData from "../data/coffee-stores.json";
 
+import useTrackLocation from "../hooks/useTrackLocation";
+
 import styles from "../styles/Home.module.css";
 import { CoffeeStore } from "../Types/FourSquare";
 import { fetchCoffeeStores } from "../lib/coffee-store";
@@ -44,9 +46,14 @@ export default function Home({
   const coffeeStores: CoffeeStore[] = coffeeStoreData;
   const location = coffeeStores[0].location.locality;
 
+  const { latLong, handleTrackLocation, locationErrorMsg, isFindingLocation } =
+    useTrackLocation();
+
+  console.log({ latLong, locationErrorMsg, isFindingLocation });
+
   // @ handleOnBannerBrnClick()
   const handleOnBannerBrnClick = () => {
-    // handleTrackLocation();
+    handleTrackLocation();
   };
 
   return (
@@ -58,9 +65,11 @@ export default function Home({
 
       <main className={styles.main}>
         <Banner
-          buttonText="View Stores Nearby"
+          buttonText={isFindingLocation ? "Locating..." : "View Stores Nearby"}
           handleClick={handleOnBannerBrnClick}
         />
+
+        {locationErrorMsg && <p>Something went wrong: {locationErrorMsg}</p>}
 
         <Image
           src="/static/hero-image.png"
@@ -72,7 +81,7 @@ export default function Home({
         />
 
         {coffeeStores.length > 0 && (
-          <>
+          <div className={styles.sectionWrapper}>
             <h2 className={styles.heading2}>{location} Stores</h2>
             <div className={styles.cardLayout}>
               {coffeeStores.map((store) => {
@@ -89,7 +98,7 @@ export default function Home({
                 );
               })}
             </div>
-          </>
+          </div>
         )}
       </main>
     </div>

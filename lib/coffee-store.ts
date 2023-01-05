@@ -59,7 +59,6 @@ export async function fetchCoffeeStores() {
   };
 
   const photos = await getListOfCoffeeStoresPhotos({ query: "coffee stores" });
-  console.log(photos);
 
   const url = getUrlForCoffeeStores({
     latlong: [-19.37, -40.06],
